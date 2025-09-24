@@ -4,7 +4,7 @@ import type { ShortenedURL } from '../models/ShortenedURL';
 const useUrlShortener = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<ShortenedURL | null>(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<Error | null>(null);
     const baseURL = 'https://localhost:8080/';
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -33,8 +33,8 @@ const useUrlShortener = () => {
 
             const result: ShortenedURL = await res.json();
             setData(result);
-        } catch(err: any) {
-            if (err.name !== 'AbortError') {
+        } catch(err: unknown) {
+            if (err instanceof Error && err.name !== "AbortError") {
                 console.error(err);
                 setError(err);
             }
